@@ -1,6 +1,6 @@
 # Dataiku
 Python Scripts: Contains Python code used in Dataiku to read, process, and classify multispectral images.
 
-PARROTSEQUOIA.zip: Contains all project files ready to import into Dataiku
+PARROTSEQUOIA.zip: Dataiku project files.
 
-Project Report: Detailed description of the project written in Spanish
+Project Report: Detailed description of the project written in Spanish.
