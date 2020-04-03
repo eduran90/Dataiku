@@ -1,0 +1,25 @@
+# -*- coding: utf-8 -*-
+import dataiku
+import pandas as pd, numpy as np
+from dataiku import pandasutils as pdu
+from sklearn.cluster import KMeans
+
+
+# Read recipe inputs
+spectral_Features_Normalized = dataiku.Dataset("Spectral_Features_Normalized")
+spectral_Features_Normalized_df = spectral_Features_Normalized.get_dataframe()
+pixel_Mask = dataiku.Dataset("Pixel_Mask")
+pixel_Mask_df = pixel_Mask.get_dataframe()
+
+# Clustering
+Nc = 2
+kmeans = KMeans(n_clusters=Nc,).fit(np.array(spectral_Features_Normalized_df))
+Mask = np.array(pixel_Mask_df)
+Mask[Mask==1] = kmeans.labels_
+
+classification_Map_df = pd.DataFrame(Mask) # Compute a Pandas dataframe to write into Classification_Map
+
+
+# Write recipe outputs
+classification_Map = dataiku.Dataset("Classification_Map")
+classification_Map.write_with_schema(classification_Map_df)

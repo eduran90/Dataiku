@@ -1,0 +1,31 @@
+# -------------------------------------------------------------------------------- NOTEBOOK-CELL: CODE
+# -*- coding: utf-8 -*-
+import dataiku
+import pandas as pd, numpy as np
+from dataiku import pandasutils as pdu
+from scipy import stats
+
+# Read recipe inputs
+spectral_Features = dataiku.Dataset("Spectral_Features")
+spectral_Features_df = spectral_Features.get_dataframe()
+
+# Data Cleansing and Mask Generation
+Mask = np.array(~np.isnan(spectral_Features_df).any(axis=1))*1
+Mask = Mask.reshape(96,128) # Binary mask (1-keep pixel; 0-discard)
+spectral_Features_Cleansed = spectral_Features_df[~np.isnan(spectral_Features_df).any(axis=1)] # Remove all rows with NaN
+
+
+# Normalization
+spectral_Features_Normalized = stats.zscore(spectral_Features_Cleansed, axis=0) # Normalize each feature (column)
+
+
+# Convert to Data Frames
+spectral_Features_Normalized_df = pd.DataFrame(spectral_Features_Normalized) # Compute a Pandas dataframe to write into Spectral_Features_Normalized
+pixel_Mask_df = pd.DataFrame(Mask) # Compute a Pandas dataframe to write into Pixel_Mask
+
+
+# Write recipe outputs
+spectral_Features_Normalized = dataiku.Dataset("Spectral_Features_Normalized")
+spectral_Features_Normalized.write_with_schema(spectral_Features_Normalized_df)
+pixel_Mask = dataiku.Dataset("Pixel_Mask")
+pixel_Mask.write_with_schema(pixel_Mask_df)
