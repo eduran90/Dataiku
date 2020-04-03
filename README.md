@@ -1,2 +1,2 @@
 # Dataiku
-Python scripts developed for use in the Dataiku Software
+Python scripts used in Dataiku to read, process, and classify multispectral images.
